@@ -58,7 +58,6 @@ jobs:
       name: Test
       env:
         registrys: >-
-          registry.baidubce.com
           registry.us-east-1.aliyuncs.com
           uswccr.ccs.tencentyun.com
           pcit-docker.pkg.coding.net/khs1994-docker
