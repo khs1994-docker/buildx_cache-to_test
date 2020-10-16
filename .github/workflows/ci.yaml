@@ -28,18 +28,23 @@ jobs:
         password: ${{ secrets.CODING_DOCKER_PASSWORD }}
     - uses: azure/docker-login@v1
       with:
+        login-server: registry.baidubce.com
+        username: 29bda121d7644a6e8d0294aa33840882
+        password: ${{ secrets.BAIDU_DOCKER_PASSWORD }}
+    - uses: azure/docker-login@v1
+      with:
         login-server: registry.us-east-1.aliyuncs.com
         username: 906210846@qq.com
         password: ${{ secrets.DOCKER_PASSWORD }}
     - uses: azure/docker-login@v1
       with:
-        # login-server: 
-        username: khs1994
+        login-server: uswccr.ccs.tencentyun.com
+        username: 906210846
         password: ${{ secrets.DOCKER_PASSWORD }}
     - uses: azure/docker-login@v1
       with:
-        login-server: uswccr.ccs.tencentyun.com
-        username: 906210846
+        # login-server: 
+        username: khs1994
         password: ${{ secrets.DOCKER_PASSWORD }}
     - run: |
           for item in $registrys;
@@ -47,8 +52,15 @@ jobs:
             echo ::group::Test $item
             docker buildx build \
             --cache-to=${item}/khs1994/alpine:cache \
-            . && echo "::warning:: $item allow cache upload" || echo "::error:: $item not allow cache upload"
+            . && echo "::warning:: [ $item ] allow cache upload" || echo "::error:: [ $item ] not allow cache upload"
             echo ::endgroup::
           done
+      name: Test
       env:
-        registrys: ghcr.io pcit-docker.pkg.coding.net/khs1994-docker registry.us-east-1.aliyuncs.com uswccr.ccs.tencentyun.com docker.io
+        registrys: >-
+          registry.baidubce.com
+          registry.us-east-1.aliyuncs.com
+          uswccr.ccs.tencentyun.com
+          pcit-docker.pkg.coding.net/khs1994-docker
+          ghcr.io
+          docker.io
