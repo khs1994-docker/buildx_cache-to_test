@@ -1,0 +1,50 @@
+on:
+  push:
+
+name: ci
+
+jobs:
+  ci:
+    runs-on: ubuntu-20.04
+    steps:
+    - run: |
+        {
+          echo "FROM alpine"
+          echo "RUN echo 1"
+        } | tee Dockerfile
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ghcr.io
+        username: khs1994
+        password: ${{ secrets.GHCR_IO_TOKEN }}
+    - uses: azure/docker-login@v1
+      with:
+        login-server: pcit-docker.pkg.coding.net
+        username: khs1994-1601432822176
+        password: ${{ secrets.CODING_DOCKER_PASSWORD }}
+    - uses: azure/docker-login@v1
+      with:
+        login-server: registry.us-east-1.aliyuncs.com
+        username: 906210846@qq.com
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - uses: azure/docker-login@v1
+      with:
+        # login-server: 
+        username: khs1994
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - uses: azure/docker-login@v1
+      with:
+        login-server: uswccr.ccs.tencentyun.com
+        username: 906210846
+        password: ${{ secrets.DOCKER_PASSWORD }}
+     - run: |
+          for item in $registrys;
+          do
+            echo ::group::Test $item
+            docker buildx build \
+            --cache-to=${item}/khs1994/alpine:cache \
+            . && echo "::warning:: $item allow cache upload" || echo "::error:: $item not allow cache upload"
+            echo ::endgroup::
+          done
+       env:
+         registrys: ghcr.io pcit-docker.pkg.coding.net/khs1994-docker registry.us-east-1.aliyuncs.com uswccr.ccs.tencentyun.com docker.io
